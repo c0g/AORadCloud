@@ -220,6 +220,8 @@ while 1
         for i=1:nid,
             %xloc(i) and yloc(i) are coordinates of monitor i.
             obs(1,1)=rad(xloc(i),yloc(i),tt)+wd_sigma*randn;
+            
+            ind=yloc(i)*nx+xloc(i);
             obs(2,1)=wind_b+particle_vel.x(ind,tt)+gc_sigma*randn;
             obs(3,1)=wind_b+particle_vel.y(ind,tt)+gc_sigma*randn;
     
