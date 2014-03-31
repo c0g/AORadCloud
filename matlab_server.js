@@ -11,9 +11,9 @@ zsock_rec.subscribe('');
 var http = require('http');
 
 var options_send = {
-	host: "localhost",
-	port: "3001",
-	path: "/",
+	host: "holt.mrl.nott.ac.uk",
+	port: "49992",
+	path: "/prediction",
 	method: "POST"
 }
 
@@ -34,24 +34,21 @@ zsock_rec.on('message', function(data) {
 
 //We run a server to accept post requests
 server = http.createServer( function(req, res) {
-
-    // console.dir(req.param);
-
-    if (req.method == 'POST') {
-        console.log("POST");
-        var body = '';
-        req.on('data', function (data) {
-            body += data;
-            console.log("Partial body: " + body);
-        });
-        req.on('end', function () {
-            console.log("Body: " + body);
-            zsock.send(body);
-        });
-        
-        res.writeHead(200, {'Content-Type': 'text/html'});
-        res.end('post received');
-    }
+    // console.log(req);
+    console.log("Got a message");
+    console.log(req.method);
+    var body = '';
+    req.on('data', function (data) {
+        body += data;
+        console.log("Partial body: " + body);
+    });
+    req.on('end', function () {
+        console.log("Body: " + body);
+        var newbody = body.replace("\'", "\"")
+        zsock.send(newbody);
+    });
+    res.writeHead(200, {'Content-Type': 'text/html'});
+    res.end('post received');
 
 });
 

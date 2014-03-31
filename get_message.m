@@ -7,6 +7,7 @@ if(numel(idx) ~= 0)
         if idx(c) == channel
             s_id = idx(c);
             data = zmq( 'receive', s_id );
+            disp(char(data'))
             message = loadjson(char(data)');
         end
     end

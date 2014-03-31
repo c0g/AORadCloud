@@ -72,6 +72,7 @@ clear sub;
 init = 1;
 while 1
     tic
+     
     if ~init
         [message_type, message_payload] = get_message(sub);
         switch message_type
@@ -98,17 +99,20 @@ while 1
                 
                 REQUEST_CURRENT_STATE = 1;
             case 'REQUEST_PREDICTION',
-                
                 REQUEST_PREDICTION = 1;
                 PREDICT_N = message_payload;
-            otherwise,
+            case 'NONE',
                 BYPASS=1;
+            otherwise,
+                disp('Unrecognised command')
+                message_type = 'UNRECOGNISED_COMMAND';
+                
         end
     else
         init = 0;
         BYPASS=1;
     end
-    MESSAGE = 'fail';         
+    MESSAGE = 'fail';     
     if GET_GROUND_TRUTH
         disp('GET GROUND TRUTH');
         GET_GROUND_TRUTH = 0;
