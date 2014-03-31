@@ -1,6 +1,6 @@
 clear all
 close all
-
+addpath(genpath(pwd))
 generate_new_sim=0;    % 1 for new scenario.
 draw=0;                % 1 to show ground truth for new scenario.
 nagents=4;             % Number of cloud monitors.
@@ -103,6 +103,7 @@ while 1
                 PREDICT_N = message_payload;
             case 'NONE',
                 BYPASS=1;
+		pause(0.01);
             otherwise,
                 disp('Unrecognised command')
                 message_type = 'UNRECOGNISED_COMMAND';
