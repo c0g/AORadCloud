@@ -107,8 +107,8 @@ while 1
                 BYPASS = 1;
                 pause(0.05);
             otherwise,
-                disp("INVALID COMMAND")
-                MESSAGE = "INVALID COMMAND"
+                disp('INVALID COMMAND');
+                MESSAGE = 'INVALID COMMAND';
         end
     else
         init = 0;
