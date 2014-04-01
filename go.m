@@ -103,7 +103,7 @@ while 1
                 PREDICT_N = message_payload;
             case 'NONE',
                 BYPASS=1;
-		pause(0.01);
+		pause(0.1);
             otherwise,
                 disp('Unrecognised command')
                 message_type = 'UNRECOGNISED_COMMAND';
