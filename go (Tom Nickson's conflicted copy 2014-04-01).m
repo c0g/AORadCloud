@@ -32,10 +32,8 @@ catch e
                          detonation,detonation_extent,wind_s,10,wind_b,K,rho,draw);
     fprintf(1,'Ground truth generated.\n\n');
 
-    scale=100/(10+max(max(max(rad))));
-
     save_rad(['ground_truth.txt'],rad);
-    save('ground_truth','rad','KK','particle_vel','rho','scale');
+    save('ground_truth','rad','KK','particle_vel','rho');
 end
 
 % ------- Main loop -------------------------
@@ -74,6 +72,7 @@ clear sub;
 init = 1;
 while 1
     tic
+     
     if ~init
         [message_type, message_payload] = get_message(sub);
         switch message_type
@@ -100,21 +99,21 @@ while 1
                 
                 REQUEST_CURRENT_STATE = 1;
             case 'REQUEST_PREDICTION',
-                
                 REQUEST_PREDICTION = 1;
                 PREDICT_N = message_payload;
-            case 'NONE'
-                BYPASS = 1;
-                pause(0.05);
+            case 'NONE',
+                BYPASS=1;
+		      pause(0.01);
             otherwise,
-                disp("INVALID COMMAND")
-                MESSAGE = "INVALID COMMAND"
+                disp('Unrecognised command')
+                message_type = 'UNRECOGNISED_COMMAND';
+                
         end
     else
         init = 0;
         BYPASS=1;
     end
-    MESSAGE = 'fail';         
+    MESSAGE = 'fail';     
     if GET_GROUND_TRUTH
         disp('GET GROUND TRUTH');
         GET_GROUND_TRUTH = 0;
@@ -131,7 +130,6 @@ while 1
         particle_vel = NEW_GROUND_TRUTH.particle_vel;
         [x,P]=initialise_KF(map_size,KK); % Initialise KF.
         tt=1;
-        scale=100/(10+max(max(max(rad))));
         MESSAGE = 'ok';
     end
     if NEW_GROUND_TRUTH
@@ -143,7 +141,6 @@ while 1
         save('ground_truth','rad','KK','particle_vel','rho');
         [x,P]=initialise_KF(map_size,KK); % Initialise KF.
         tt=1;
-        scale=100/(10+max(max(max(rad))));
         MESSAGE.rad = rad;
         MESSAGE.KK = KK;
         MESSAGE.particle_vel = particle_vel;
@@ -164,8 +161,8 @@ while 1
         
            map_var=max(0,(exp(x(1:nstate))-1).^2).*max(0,diag(P(1:nstate,1:nstate)));
            EST_VAR=reshape(sqrt(map_var),map_size(1),map_size(2));
-            MESSAGE.MEAN = min(scale*EST_MEAN,100);
-            MESSAGE.VAR = scale^2*EST_VAR;
+            MESSAGE.MEAN = EST_MEAN;
+            MESSAGE.VAR = EST_VAR;
            REQUEST_CURRENT_STATE=0;
     end;
     
@@ -241,7 +238,7 @@ while 1
                            gc_sigma^2],wind_b);
         end;
         FUSE_MEASUREMENTS=[];
-        MESSAGE=min(scale*GEIGER,100);
+        MESSAGE=GEIGER;
         disp(GEIGER)
     end;
 
