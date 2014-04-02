@@ -36,6 +36,7 @@ zsock_rec.on('message', function(data) {
 server = http.createServer( function(req, res) {
     // console.log(req);
     console.log("Got a message");
+console.log(req.connection.remoteAddress);
     console.log(req.method);
     var body = '';
     req.on('data', function (data) {
